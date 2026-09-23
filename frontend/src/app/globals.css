@@ -1,0 +1,41 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --color-blue-base: #0A0E27;
+  --color-blue-dark: #1E3A8A;
+  --color-blue-main: #3B82F6;
+  --color-blue-light: #60A5FA;
+  --color-blue-accent: #93C5FD;
+
+  --font-inter: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-space: var(--font-space), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: #0A0E27;
+    --foreground: #F8FAFC;
+  }
+  
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-inter);
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .glassmorphism {
+    @apply bg-blue-base/40 backdrop-blur-md border border-blue-main/20 shadow-lg shadow-blue-main/10;
+  }
+  
+  .glassmorphism-hover {
+    @apply hover:bg-blue-dark/50 hover:border-blue-light/40 hover:shadow-blue-main/30 hover:-translate-y-1 transition-all duration-300;
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px rgba(96, 165, 250, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+}
