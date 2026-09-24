@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { motion } from "framer-motion";
-import { Briefcase } from "lucide-react";
+import { Briefcase, ArrowRight } from "lucide-react";
 import { experiences as staticExperiences } from "@/data/experience";
+import Link from "next/link";
 
 export default function ExperienceSection({ experiences: dynamicExperiences }: { experiences?: any[] }) {
   const data = dynamicExperiences && dynamicExperiences.length > 0 ? dynamicExperiences : staticExperiences;
@@ -46,34 +48,42 @@ export default function ExperienceSection({ experiences: dynamicExperiences }: {
                 </div>
 
                 <div className="w-full md:w-5/12 mt-6 md:mt-0">
-                  <div className="glassmorphism p-6 rounded-xl glassmorphism-hover group relative overflow-hidden">
-                    {/* Decorative Blob */}
-                    <div className="absolute -right-10 -top-10 w-32 h-32 bg-blue-main/10 rounded-full blur-2xl group-hover:bg-blue-main/20 transition-all"></div>
-                    
-                    <span className="inline-block px-3 py-1 mb-4 text-xs font-medium text-blue-light bg-blue-main/10 rounded-full border border-blue-main/20">
-                      {exp.period}
-                    </span>
-                    <h3 className="text-xl font-bold text-white font-space mb-1">
-                      {exp.role}
-                    </h3>
-                    <h4 className="text-blue-main font-medium mb-4">
-                      {exp.company}
-                    </h4>
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6">
-                      {exp.description}
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      {(exp.technologies || exp.skills || []).map((tech: string, i: number) => (
-                        <span 
-                          key={i} 
-                          className="text-xs font-medium px-2.5 py-1 rounded-md bg-blue-dark/40 text-blue-100 border border-blue-light/10"
-                        >
-                          {tech}
+                  <Link href={`/experience/${exp.id || index}`} className="block">
+                    <div className="glassmorphism p-6 rounded-xl glassmorphism-hover group relative overflow-hidden h-full">
+                      {/* Decorative Blob */}
+                      <div className="absolute -right-10 -top-10 w-32 h-32 bg-blue-main/10 rounded-full blur-2xl group-hover:bg-blue-main/20 transition-all"></div>
+                      
+                      <div className="flex justify-between items-start mb-4">
+                        <span className="inline-block px-3 py-1 text-xs font-medium text-blue-light bg-blue-main/10 rounded-full border border-blue-main/20">
+                          {exp.period}
                         </span>
-                      ))}
+                        <div className="w-8 h-8 rounded-full bg-blue-main/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1">
+                          <ArrowRight size={16} className="text-blue-light" />
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-xl font-bold text-white font-space mb-1">
+                        {exp.role}
+                      </h3>
+                      <h4 className="text-blue-main font-medium mb-4">
+                        {exp.company}
+                      </h4>
+                      <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-3">
+                        {exp.description}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        {(exp.technologies || exp.skills || []).map((tech: string, i: number) => (
+                          <span 
+                            key={i} 
+                            className="text-xs font-medium px-2.5 py-1 rounded-md bg-blue-dark/40 text-blue-100 border border-blue-light/10"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </motion.div>
             ))}

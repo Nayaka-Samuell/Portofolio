@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useRef } from "react";
 import { User, Briefcase, Users, FolderKanban, Upload, Plus, LogOut } from "lucide-react";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -20,6 +19,7 @@ export default function AdminContent() {
     headline: "",
     bio: "",
   });
+  const [cvFile, setCvFile] = useState<File | null>(null);
 
   // Forms state
   const [expForm, setExpForm] = useState({ role: "", company: "", period: "", description: "" });
@@ -80,16 +80,25 @@ export default function AdminContent() {
     e.preventDefault();
     setLoading(true);
     setStatus("Saving Profile...");
+
+    const profileData = new FormData();
+    profileData.append("full_name", formData.full_name);
+    profileData.append("headline", formData.headline);
+    profileData.append("bio", formData.bio);
+    if (cvFile) {
+      profileData.append("cv", cvFile);
+    }
+
     try {
       const res = await fetch(`${API_URL}/api/profile/nayaka`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: profileData, // Automatically sets multipart/form-data
       });
       setStatus(res.ok ? "Profile updated successfully!" : "Failed to update profile.");
+      if (res.ok) setCvFile(null);
       setTimeout(() => setStatus(""), 3000);
     } catch (err) {
-      console.error(err);
+      console.error("Profile error", err);
       setStatus("Error connecting to server.");
     } finally {
       setLoading(false);
@@ -110,6 +119,7 @@ export default function AdminContent() {
       if (res.ok) setExpForm({ role: "", company: "", period: "", description: "" });
       setTimeout(() => setStatus(""), 3000);
     } catch (err) {
+      console.error("Experience error", err);
       setStatus("Error connecting to server.");
     } finally {
       setLoading(false);
@@ -130,6 +140,7 @@ export default function AdminContent() {
       if (res.ok) setOrgForm({ name: "", role: "", period: "", description: "" });
       setTimeout(() => setStatus(""), 3000);
     } catch (err) {
+      console.error("Org error", err);
       setStatus("Error connecting to server.");
     } finally {
       setLoading(false);
@@ -165,6 +176,7 @@ export default function AdminContent() {
       }
       setTimeout(() => setStatus(""), 3000);
     } catch (err) {
+      console.error("Project error", err);
       setStatus("Error connecting to server.");
     } finally {
       setLoading(false);
@@ -208,38 +220,42 @@ export default function AdminContent() {
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-6 relative z-10">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8">
+      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
         
         {/* Sidebar Navigation */}
-        <div className="w-full md:w-72 flex-shrink-0">
-          <div className="glassmorphism p-6 rounded-2xl sticky top-28 border border-blue-main/20">
-            <h1 className="text-xl font-bold text-white font-space mb-6 flex items-center gap-2">
-              <span className="text-blue-main">Admin</span> Dashboard
+        <div className="w-full lg:w-72 flex-shrink-0">
+          <div className="glassmorphism p-4 md:p-6 rounded-2xl sticky top-24 lg:top-28 border border-blue-main/20 z-20">
+            <h1 className="text-xl font-bold text-white font-space mb-4 lg:mb-6 flex items-center gap-2">
+              <span className="text-blue-main">Admin</span> <span className="hidden md:inline">Dashboard</span>
             </h1>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 snap-x hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-3 w-full p-3.5 rounded-xl transition-all font-medium text-sm ${
+                  className={`flex items-center justify-center lg:justify-start gap-2 lg:gap-3 w-auto min-w-[140px] lg:w-full p-3 lg:p-3.5 rounded-xl transition-all font-medium text-sm whitespace-nowrap snap-start shrink-0 ${
                     activeTab === tab.id 
                       ? "bg-blue-main text-white shadow-[0_0_15px_rgba(59,130,246,0.3)]" 
-                      : "text-gray-400 hover:bg-blue-dark/40 hover:text-white"
+                      : "bg-blue-dark/20 lg:bg-transparent text-gray-400 hover:bg-blue-dark/40 hover:text-white border border-blue-main/10 lg:border-transparent"
                   }`}
                 >
                   {tab.icon} {tab.label}
                 </button>
               ))}
             </div>
-            <hr className="my-6 border-blue-main/20" />
-            <button onClick={() => setIsAuthenticated(false)} className="flex items-center justify-center gap-3 w-full p-3.5 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all font-medium text-sm">
+            <hr className="hidden lg:block my-6 border-blue-main/20" />
+            <button onClick={() => setIsAuthenticated(false)} className="hidden lg:flex items-center justify-center gap-3 w-full p-3.5 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all font-medium text-sm">
               <LogOut size={18} /> Logout
+            </button>
+            {/* Mobile Logout (Header Absolute) */}
+            <button onClick={() => setIsAuthenticated(false)} className="lg:hidden absolute top-4 right-4 p-2 bg-red-500/10 text-red-400 rounded-lg">
+              <LogOut size={18} />
             </button>
           </div>
         </div>
 
         {/* Main Content Area */}
-        <div className="flex-1 glassmorphism p-8 rounded-2xl relative overflow-hidden border border-blue-main/20">
+        <div className="flex-1 glassmorphism p-5 md:p-8 rounded-2xl relative overflow-hidden border border-blue-main/20">
           {/* Subtle Background Glow */}
           <div className="absolute -top-20 -right-20 w-72 h-72 bg-blue-main/10 rounded-full blur-[100px] -z-10 pointer-events-none"></div>
           
@@ -289,7 +305,25 @@ export default function AdminContent() {
                   className="w-full bg-blue-dark/20 border border-blue-main/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-light resize-none transition-all"
                 />
               </div>
-              <button type="submit" disabled={loading} className="px-8 py-3 bg-blue-main hover:bg-blue-light disabled:bg-blue-dark text-white rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+              
+              <div className="p-6 border border-dashed border-blue-main/40 rounded-xl bg-blue-dark/10">
+                <label className="block text-sm font-medium text-gray-400 mb-2">Upload Resume / CV (PDF)</label>
+                <div className="flex items-center gap-4">
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setCvFile(e.target.files[0]);
+                      }
+                    }}
+                    className="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-main file:text-white hover:file:bg-blue-light transition-all cursor-pointer"
+                  />
+                  {cvFile && <span className="text-green-400 text-sm font-medium whitespace-nowrap">File ready</span>}
+                </div>
+              </div>
+
+              <button type="submit" disabled={loading} className="px-8 py-3 bg-blue-main hover:bg-blue-light disabled:bg-blue-dark text-white rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)] w-full">
                 {loading ? "Saving..." : "Save Changes"}
               </button>
             </form>
@@ -421,6 +455,7 @@ export default function AdminContent() {
                 />
                 {projectFile ? (
                   <div className="flex flex-col items-center animate-in fade-in zoom-in duration-300">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={URL.createObjectURL(projectFile)} alt="Preview" className="h-40 object-contain rounded-lg mb-4 shadow-lg ring-2 ring-blue-main/30" />
                     <p className="text-blue-light font-medium text-sm">{projectFile.name}</p>
                     <p className="text-xs text-gray-500 mt-2 flex items-center gap-1"><Upload size={14}/> Click to change thumbnail</p>

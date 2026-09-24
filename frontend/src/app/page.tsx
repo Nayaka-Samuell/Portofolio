@@ -6,15 +6,17 @@ import OrganizationsSection from "@/components/OrganizationsSection";
 import ContactSection from "@/components/ContactSection";
 import { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   let profile = null;
   try {
-    const res = await fetch("http://localhost:5000/api/profile/nayaka", { cache: "no-store" });
-    if (res.ok) {
+    const res = await fetch("http://localhost:5000/api/profile/nayaka", { cache: "no-store" }).catch(() => null);
+    if (res && res.ok) {
       profile = await res.json();
     }
-  } catch (err) {
-    console.error("Failed to fetch profile for metadata:", err);
+  } catch {
+    // Silently ignore
   }
 
   const name = profile?.full_name || "Nayaka Samuel Andrean";
@@ -51,12 +53,12 @@ export default async function Home() {
   let profile = null;
 
   try {
-    const res = await fetch("http://localhost:5000/api/profile/nayaka", { cache: "no-store" });
-    if (res.ok) {
+    const res = await fetch("http://localhost:5000/api/profile/nayaka", { cache: "no-store" }).catch(() => null);
+    if (res && res.ok) {
       profile = await res.json();
     }
-  } catch (err) {
-    console.error("Failed to fetch profile:", err);
+  } catch {
+    // Silently ignore
   }
 
   return (
@@ -68,6 +70,7 @@ export default async function Home() {
       />
       <AboutSection 
         bio={profile?.bio} 
+        cvUrl={profile?.cv_url}
       />
       <ExperienceSection 
         experiences={profile?.experiences} 

@@ -27,3 +27,24 @@ USING (bucket_id = 'portfolio_images');
 CREATE POLICY "Admin Delete Access" 
 ON storage.objects FOR DELETE
 USING (bucket_id = 'portfolio_images');
+
+-- Create a Supabase Storage Bucket named "cvs"
+INSERT INTO storage.buckets (id, name, public, avif_autodetection)
+VALUES ('cvs', 'cvs', TRUE, FALSE)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE POLICY "Public Access CVs" 
+ON storage.objects FOR SELECT
+USING (bucket_id = 'cvs');
+
+CREATE POLICY "Admin Upload Access CVs" 
+ON storage.objects FOR INSERT
+WITH CHECK (bucket_id = 'cvs');
+
+CREATE POLICY "Admin Update Access CVs" 
+ON storage.objects FOR UPDATE
+USING (bucket_id = 'cvs');
+
+CREATE POLICY "Admin Delete Access CVs" 
+ON storage.objects FOR DELETE
+USING (bucket_id = 'cvs');

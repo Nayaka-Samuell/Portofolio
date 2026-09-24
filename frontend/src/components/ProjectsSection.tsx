@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ExternalLink, Code as Github } from "lucide-react";
+import { ExternalLink, Code } from "lucide-react";
 import { projects as staticProjects } from "@/data/projects";
-import Image from "next/image";
+import TiltCard from "./TiltCard";
+import ParallaxImage from "./ParallaxImage";
 
 export default function ProjectsSection({ portfolios }: { portfolios?: any[] }) {
   const [filter, setFilter] = useState("All");
@@ -47,28 +49,28 @@ export default function ProjectsSection({ portfolios }: { portfolios?: any[] }) 
           </div>
         </motion.div>
 
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                key={project.id}
-                className="glassmorphism rounded-xl overflow-hidden group hover:-translate-y-2 hover:shadow-[0_10px_30px_rgba(59,130,246,0.2)] transition-all duration-300 flex flex-col"
-              >
-                <div className="relative h-48 w-full overflow-hidden">
-                  <div className="absolute inset-0 bg-blue-main/20 group-hover:bg-transparent transition-colors z-10"></div>
-                  <img
+            {filteredProjects.map((project: any, index: number) => (
+              <TiltCard key={project.id || index} className={`${index === 0 ? "md:col-span-2" : ""}`}>
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className={`glassmorphism rounded-xl overflow-hidden group hover:shadow-[0_10px_30px_rgba(59,130,246,0.2)] transition-all duration-300 flex flex-col md:flex-row w-full h-full`}
+                >
+                <div className={`relative w-full overflow-hidden ${index === 0 ? "md:w-1/2 h-64 md:h-auto" : "h-48"}`}>
+                  <div className="absolute inset-0 bg-blue-main/20 group-hover:bg-transparent transition-colors z-10 pointer-events-none"></div>
+                  <ParallaxImage
                     src={project.thumbnail || project.image || "https://via.placeholder.com/400x300?text=No+Image"}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                   />
                 </div>
                 
-                <div className="p-6 flex-grow flex flex-col">
+                <div className={`p-6 flex-grow flex flex-col ${index === 0 ? "md:w-1/2 justify-center" : ""}`}>
                   <span className="text-blue-light text-xs font-bold uppercase tracking-wider mb-2">{project.category || 'Project'}</span>
                   <h3 className="text-xl font-bold text-white mb-3">{project.title}</h3>
                   <p className="text-sm text-gray-400 mb-6 flex-grow">{project.description}</p>
@@ -89,7 +91,7 @@ export default function ProjectsSection({ portfolios }: { portfolios?: any[] }) 
                     <div className="flex gap-4 w-full justify-between mt-2">
                       {(project.githubUrl || project.github) && (
                         <a href={project.githubUrl || project.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white hover:text-glow transition-all flex items-center gap-2 text-sm font-medium">
-                          <Github size={18} /> Code
+                          <Code size={18} /> Code
                         </a>
                       )}
                       {(project.demoUrl || project.link) && (
@@ -101,7 +103,8 @@ export default function ProjectsSection({ portfolios }: { portfolios?: any[] }) 
                   </div>
                 </div>
               </motion.div>
-            ))}
+            </TiltCard>
+          ))}
           </AnimatePresence>
         </motion.div>
       </div>

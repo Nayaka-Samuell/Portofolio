@@ -8,6 +8,7 @@ export default function QRCodeGenerator() {
 
   useEffect(() => {
     // Generate URL dynamically based on current origin
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setUrl(`${window.location.origin}/tap?src=qr`);
   }, []);
 

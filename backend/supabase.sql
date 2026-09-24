@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     phone TEXT,
     linkedin_url TEXT,
     github_url TEXT,
+    cv_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -25,6 +26,7 @@ CREATE TABLE IF NOT EXISTS portfolios (
     content TEXT, -- Markdown case study
     project_url TEXT,
     image_url TEXT,
+    gallery TEXT[],
     tags TEXT[],
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

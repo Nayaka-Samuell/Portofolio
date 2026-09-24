@@ -1,19 +1,61 @@
 import { Metadata } from "next";
 import Link from "next/link";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ReactMarkdown from "react-markdown";
-import { ArrowLeft, ExternalLink, Github, Calendar, Tag } from "lucide-react";
-import { notFound } from "next/navigation";
+import { ArrowLeft, ExternalLink, Code as Github, Calendar, Tag } from "lucide-react";
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const resolvedParams = await props.params;
+  const id = resolvedParams.id;
+
+  const fallbackProjects = [
+    {
+      id: "p1",
+      title: "Software Architecture Lab (Final Project)",
+      description: "Proyek akhir implementasi design pattern dan arsitektur software yang terukur dan efisien.",
+      techStack: ["Node.js", "Software Architecture"],
+      category: "Backend",
+      thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+      githubUrl: "https://github.com/Nayaka-Samuell/FINPRO-Software-Archi-LAB",
+    },
+    {
+      id: "p2",
+      title: "Hybrid Mobile Solutions",
+      description: "Aplikasi mobile cross-platform dengan performa optimal dan UI intuitif.",
+      techStack: ["React Native/Flutter", "Mobile Dev"],
+      category: "Mobile",
+      thumbnail: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80",
+      githubUrl: "https://github.com/Nayaka-Samuell/FINPRO-Mobile-Hybrid-Solutions",
+    },
+    {
+      id: "p3",
+      title: "Fundamental Web Project",
+      description: "Proyek pondasi web development yang berfokus pada struktur logika dan UI/UX dasar.",
+      techStack: ["Web Fundamentals", "JavaScript"],
+      category: "Web",
+      thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
+      githubUrl: "https://github.com/Nayaka-Samuell/Project-1-",
+    }
+  ];
+
   let project = null;
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   try {
-    const res = await fetch(`${API_URL}/api/profile/nayaka`, { cache: "no-store" });
-    if (res.ok) {
+    const res = await fetch(`${API_URL}/api/profile/nayaka`, { cache: "no-store" }).catch(() => null);
+    if (res && res.ok) {
       const profile = await res.json();
-      project = profile.portfolios?.find((p: any) => p.id === params.id || p._id === params.id);
+      project = profile.portfolios?.find((p: any) => p.id === id || p._id === id);
     }
-  } catch (e) {}
+  } catch {
+    // Silently ignore
+  }
+
+  // Fallback
+  if (!project) {
+    project = fallbackProjects.find((p: any) => p.id === id);
+  }
 
   if (!project) {
     return { title: "Project Not Found" };
@@ -30,24 +72,65 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
+export default async function ProjectDetailPage(props: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await props.params;
+  const id = resolvedParams.id;
+
+  const fallbackProjects = [
+    {
+      id: "p1",
+      title: "Software Architecture Lab (Final Project)",
+      description: "Proyek akhir implementasi design pattern dan arsitektur software yang terukur dan efisien.",
+      techStack: ["Node.js", "Software Architecture"],
+      category: "Backend",
+      thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+      githubUrl: "https://github.com/Nayaka-Samuell/FINPRO-Software-Archi-LAB",
+    },
+    {
+      id: "p2",
+      title: "Hybrid Mobile Solutions",
+      description: "Aplikasi mobile cross-platform dengan performa optimal dan UI intuitif.",
+      techStack: ["React Native/Flutter", "Mobile Dev"],
+      category: "Mobile",
+      thumbnail: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=800&q=80",
+      githubUrl: "https://github.com/Nayaka-Samuell/FINPRO-Mobile-Hybrid-Solutions",
+    },
+    {
+      id: "p3",
+      title: "Fundamental Web Project",
+      description: "Proyek pondasi web development yang berfokus pada struktur logika dan UI/UX dasar.",
+      techStack: ["Web Fundamentals", "JavaScript"],
+      category: "Web",
+      thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&q=80",
+      githubUrl: "https://github.com/Nayaka-Samuell/Project-1-",
+    }
+  ];
+
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   
-  let project = null;
+  let project: any = null;
   try {
-    // Attempting to find the project from profile endpoint
-    const res = await fetch(`${API_URL}/api/profile/nayaka`, { cache: "no-store" });
-    if (res.ok) {
+    const res = await fetch(`${API_URL}/api/profile/nayaka`, { cache: "no-store" }).catch(() => null);
+    if (res && res.ok) {
       const profile = await res.json();
-      project = profile.portfolios?.find((p: any) => p.id === params.id || p._id === params.id);
+      project = profile.portfolios?.find((p: Record<string, unknown>) => p.id === id || p._id === id);
     }
-  } catch (e) {
-    console.error(e);
+  } catch {
+    // Silently ignore
   }
 
   if (!project) {
-    // If not found, simulate a 404
-    notFound();
+    project = fallbackProjects.find((p) => p.id === id);
+  }
+
+  if (!project) {
+    return (
+      <div className="min-h-[100dvh] bg-blue-base flex flex-col items-center justify-center px-6">
+        <h1 className="text-4xl font-bold text-white mb-4">Project Not Found</h1>
+        <p className="text-gray-400 mb-8">The project you are looking for is currently unavailable or doesn&apos;t exist.</p>
+        <Link href="/#projects" className="px-6 py-3 bg-blue-main hover:bg-blue-light text-white rounded-lg font-bold transition-all">Back to Projects</Link>
+      </div>
+    );
   }
 
   // Fallback markdown if empty
@@ -105,6 +188,7 @@ ${project.description}
 
         {/* Thumbnail Image */}
         <div className="w-full rounded-3xl overflow-hidden mb-16 shadow-2xl border border-blue-main/10 group">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src={project.thumbnail || project.image || "https://via.placeholder.com/1200x600?text=No+Image"} 
             alt={project.title} 

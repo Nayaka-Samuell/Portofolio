@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { motion } from "framer-motion";
 import { organizations as staticOrganizations } from "@/data/organizations";
-import { Users } from "lucide-react";
+import { Users, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function OrganizationsSection({ organizations: dynamicOrganizations }: { organizations?: any[] }) {
   const data = dynamicOrganizations && dynamicOrganizations.length > 0 ? dynamicOrganizations : staticOrganizations;
@@ -41,17 +43,28 @@ export default function OrganizationsSection({ organizations: dynamicOrganizatio
               </div>
 
               <div className={`ml-12 md:ml-0 w-full md:w-1/2 ${index % 2 === 0 ? "md:pl-12" : "md:pr-12"} pt-2 md:pt-0`}>
-                <div className="glassmorphism p-6 rounded-xl hover:-translate-y-1 transition-transform duration-300">
-                  <span className="inline-block px-3 py-1 bg-blue-dark/50 text-blue-light text-xs font-bold rounded-full mb-3">
-                    {org.period}
-                  </span>
-                  <h3 className="text-xl font-bold text-white mb-1">{org.name}</h3>
-                  <p className="text-blue-main font-medium mb-4">{org.role}</p>
-                  {org.logo && (
-                    <img src={org.logo} alt={org.name} className="w-full h-40 object-cover rounded-lg mb-4 border border-blue-main/30" />
-                  )}
-                  <p className="text-sm text-gray-400 leading-relaxed">{org.description}</p>
-                </div>
+                <Link href={`/organization/${org.id || index}`} className="block">
+                  <div className="glassmorphism p-6 rounded-xl hover:-translate-y-1 transition-transform duration-300 group relative">
+                    <div className="absolute top-6 right-6 w-8 h-8 rounded-full bg-blue-main/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1">
+                      <ArrowRight size={16} className="text-blue-light" />
+                    </div>
+                    
+                    <span className="inline-block px-3 py-1 bg-blue-dark/50 text-blue-light text-xs font-bold rounded-full mb-3">
+                      {org.period}
+                    </span>
+                    <h3 className="text-xl font-bold text-white mb-1 pr-10">{org.name}</h3>
+                    <p className="text-blue-main font-medium mb-4">{org.role}</p>
+                    {org.logo && (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img 
+                        src={org.logo} 
+                        alt={org.name} 
+                        className="w-full h-40 object-cover rounded-lg mb-4 border border-blue-main/30" 
+                      />
+                    )}
+                    <p className="text-sm text-gray-400 leading-relaxed line-clamp-3">{org.description}</p>
+                  </div>
+                </Link>
               </div>
             </motion.div>
           ))}
