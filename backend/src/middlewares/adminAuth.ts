@@ -14,8 +14,8 @@ export const adminAuth = (req: Request, res: Response, next: NextFunction): void
       password = decoded.substring(splitIndex + 1);
     }
   } else {
-    username = (req.headers['x-admin-username'] as string) || (req.body?.adminUsername as string) || (req.query?.adminUsername as string) || '';
-    password = (req.headers['x-admin-password'] as string) || (req.body?.adminPassword as string) || (req.query?.adminPassword as string) || '';
+    username = (req.headers['x-admin-username'] as string) || (req.body?.adminUsername as string) || '';
+    password = (req.headers['x-admin-password'] as string) || (req.body?.adminPassword as string) || '';
   }
 
   const validUsername = process.env.ADMIN_USERNAME || 'Nayaka21060112';
