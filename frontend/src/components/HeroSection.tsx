@@ -58,7 +58,7 @@ export default function HeroSection({ name, headline, bio }: { name?: string, he
           className="overflow-hidden mb-10"
         >
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-gray-300 leading-relaxed">
-            {headline || "Computer Science Student & Full-Stack Developer."} {bio || "I build scalable web applications and robust architectures to solve real-world problems."}
+            {headline || "Computer Science Student & Full-Stack Developer. I build scalable web applications and robust architectures to solve real-world problems."}
           </p>
         </motion.div>
 
