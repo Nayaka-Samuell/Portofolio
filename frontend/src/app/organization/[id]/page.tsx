@@ -12,6 +12,7 @@ export default function OrganizationDetail() {
   const id = params.id as string;
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   
   // Parallax Setup
   const { scrollYProgress } = useScroll();
@@ -78,11 +79,17 @@ export default function OrganizationDetail() {
   }
 
   // Placeholder floating photos for parallax
-  const floatingPhotos = [
-    data.logo || "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&q=80",
-    "https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=600&q=80",
-    "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=600&q=80"
+  let floatingPhotos = [
+    data.logo || "/images/freshman-leader.jpeg",
+    "/images/himti.jpeg",
+    "/images/freshman-baru.jpeg"
   ];
+
+  if (data.name?.toLowerCase().includes("binus")) {
+    floatingPhotos = [data.logo || "/images/freshman-leader.jpeg", "/images/freshman-baru.jpeg", "/images/freshman-leader.jpeg"];
+  } else if (data.name?.toLowerCase().includes("himti")) {
+    floatingPhotos = [data.logo || "/images/himti.jpeg", "/images/himti.jpeg", "/images/himti.jpeg"];
+  }
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-6 bg-blue-base overflow-hidden">
@@ -108,32 +115,35 @@ export default function OrganizationDetail() {
           </motion.div>
 
           {/* Floating Parallax Images (Now in FRONT of the blur, z-20) */}
-          <motion.div style={{ y }} className="absolute inset-0 w-full h-full z-20 pointer-events-none">
+          <motion.div style={{ y }} className="absolute inset-0 w-full h-full z-20">
             <motion.div 
               animate={{ y: [0, -20, 0] }} 
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-0 left-10 w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(59,130,246,0.3)] opacity-80 border-2 border-blue-main/30"
+              onClick={() => setSelectedImage(floatingPhotos[1])}
+              className="absolute top-0 left-10 w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(59,130,246,0.3)] opacity-80 border-2 border-blue-main/30 cursor-pointer hover:scale-105 hover:opacity-100 transition-all z-30"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={floatingPhotos[1]} className="w-full h-full object-cover" alt="Org Activity" />
+              <img src={floatingPhotos[1]} className="w-full h-full object-cover pointer-events-none" alt="Org Activity" />
             </motion.div>
             
             <motion.div 
               animate={{ y: [0, 20, 0] }} 
               transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-10 right-10 w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden shadow-[0_0_40px_rgba(96,165,250,0.4)] opacity-100 border-4 border-blue-main"
+              onClick={() => setSelectedImage(floatingPhotos[0])}
+              className="absolute bottom-10 right-10 w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden shadow-[0_0_40px_rgba(96,165,250,0.4)] opacity-100 border-4 border-blue-main cursor-pointer hover:scale-105 transition-all z-30"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={floatingPhotos[0]} className="w-full h-full object-cover" alt="Org Main" />
+              <img src={floatingPhotos[0]} className="w-full h-full object-cover pointer-events-none" alt="Org Main" />
             </motion.div>
             
             <motion.div 
               animate={{ y: [0, -30, 0] }} 
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute top-20 right-20 w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden shadow-2xl opacity-70 border border-blue-main/20"
+              onClick={() => setSelectedImage(floatingPhotos[2])}
+              className="absolute top-20 right-20 w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden shadow-2xl opacity-70 border border-blue-main/20 cursor-pointer hover:scale-105 hover:opacity-100 transition-all z-30"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={floatingPhotos[2]} className="w-full h-full object-cover" alt="Org Members" />
+              <img src={floatingPhotos[2]} className="w-full h-full object-cover pointer-events-none" alt="Org Members" />
             </motion.div>
           </motion.div>
           
@@ -162,6 +172,28 @@ export default function OrganizationDetail() {
           </div>
         </div>
       </div>
+
+      {/* Lightbox Overlay */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button 
+            className="absolute top-6 right-6 text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors"
+            onClick={() => setSelectedImage(null)}
+          >
+            ✕
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={selectedImage} 
+            alt="Full size view" 
+            className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl border border-blue-main/30 animate-in zoom-in duration-300"
+            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the image itself
+          />
+        </div>
+      )}
     </div>
   );
 }
