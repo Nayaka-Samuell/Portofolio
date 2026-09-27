@@ -39,7 +39,7 @@ export default function OrganizationDetail() {
               name: "BINUS @Malang",
               role: "Freshman Leader",
               period: "August 2025 - September 2025",
-              description: "Bertindak sebagai koordinator dan pendamping utama bagi mahasiswa baru. Membimbing, memotivasi, serta memastikan kelancaran seluruh rangkaian kegiatan orientasi agar para mahasiswa baru dapat beradaptasi dengan baik di lingkungan kampus yang baru.",
+              description: "Sebagai Freshman Leader di BINUS @Malang, saya ngebantu mahasiswa baru beradaptasi dengan kehidupan kampus. Saya mendampingi mereka selama orientasi, menjawab pertanyaan, dan membantu mereka mengikuti rangkaian kegiatan. Buat saya, yang penting mereka merasa punya teman untuk bertanya dan lebih percaya diri saat mulai kuliah.",
               logo: "/images/freshman-baru.jpeg"
             },
             {
@@ -47,7 +47,7 @@ export default function OrganizationDetail() {
               name: "HIMTI",
               role: "Content Division",
               period: "2024 - Present",
-              description: "Mengembangkan, merencanakan, dan memproduksi berbagai konten kreatif serta edukatif untuk keperluan publikasi dan media sosial organisasi. Berkolaborasi secara aktif dalam membangun strategi komunikasi digital untuk meningkatkan engagement mahasiswa.",
+              description: "Di divisi konten HIMTI, saya ikut mencari ide, merencanakan, dan membuat konten untuk publikasi serta media sosial organisasi. Saya bekerja bareng tim supaya informasi kegiatan mudah dipahami dan menarik buat mahasiswa. Dari sini saya belajar menyampaikan pesan dengan jelas sekaligus menyesuaikan ide dengan kebutuhan organisasi.",
               logo: "/images/himti.jpeg"
             }
           ];

@@ -27,24 +27,6 @@ export default function HeroSection({ name, headline, bio }: { name?: string, he
 
       <div className="container mx-auto px-6 text-center relative z-10">
         
-        {/* 2026 AI Futuristic Badge */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: -20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
-          className="flex justify-center mb-8"
-        >
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-main/10 border border-blue-main/30 backdrop-blur-md shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-light opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-main"></span>
-            </span>
-            <span className="text-xs font-bold text-blue-light font-space uppercase tracking-widest">
-              Powered by GPT-6 ASTRA, Sol & Terra 
-            </span>
-          </div>
-        </motion.div>
-
         <motion.div
           variants={containerVariants}
           initial="hidden"

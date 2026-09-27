@@ -54,14 +54,12 @@ export default function OrganizationsSection({ organizations: dynamicOrganizatio
                     </span>
                     <h3 className="text-xl font-bold text-white mb-1 pr-10">{org.name}</h3>
                     <p className="text-blue-main font-medium mb-4">{org.role}</p>
-                    {org.logo && (
-                      /* eslint-disable-next-line @next/next/no-img-element */
-                      <img 
-                        src={org.logo} 
-                        alt={org.name} 
-                        className="w-full h-40 object-cover rounded-lg mb-4 border border-blue-main/30" 
-                      />
-                    )}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={org.logo || (org.name?.toLowerCase().includes("himti") ? "/images/himti.jpeg" : "/images/freshman-leader.jpeg")} 
+                      alt={org.name} 
+                      className="w-full h-40 object-cover rounded-lg mb-4 border border-blue-main/30" 
+                    />
                     <p className="text-sm text-gray-400 leading-relaxed line-clamp-3">{org.description}</p>
                   </div>
                 </Link>
