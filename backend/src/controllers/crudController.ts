@@ -92,6 +92,22 @@ export const createEntity = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
+    if (entity === 'portfolios' && req.files && Array.isArray(req.files) && req.files.length > 0) {
+      const file = req.files[0];
+      if (file) {
+        const fileExt = file.originalname?.split('.').pop() || 'png';
+        const fileName = `portfolio-${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from('portfolio_images')
+          .upload(fileName, file.buffer, { contentType: file.mimetype });
+        
+        if (!uploadError) {
+          const { data: publicUrlData } = supabase.storage.from('portfolio_images').getPublicUrl(fileName);
+          parsedData.image_url = publicUrlData.publicUrl;
+        }
+      }
+    }
+
     const { data, error } = await supabase.from(entity).insert([parsedData]).select().single();
     if (error) throw error;
 

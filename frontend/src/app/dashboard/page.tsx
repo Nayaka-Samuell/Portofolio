@@ -31,7 +31,7 @@ export default function Dashboard() {
         });
         if (res.ok) {
           const json = await res.json();
-          setData(json);
+          setData(json.data || json);
           setAuth(true);
         } else {
           alert('Failed to fetch analytics data');

@@ -25,7 +25,7 @@ export default function ExperienceDetail() {
     const fetchData = async () => {
       try {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-        const res = await fetch(`${API_URL}/api/profile/nayaka`).catch(() => null);
+        const res = await fetch(`${API_URL}/api/profile/Nayaka21060112`).catch(() => null);
         
         let exp = null;
         if (res && res.ok) {

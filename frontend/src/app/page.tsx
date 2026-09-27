@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   let profile = null;
   try {
-    const res = await fetch("http://localhost:5000/api/profile/nayaka", { cache: "no-store" }).catch(() => null);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/profile/Nayaka21060112`, { cache: "no-store" }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json();
       profile = json.data;
@@ -54,7 +54,7 @@ export default async function Home() {
   let profile = null;
 
   try {
-    const res = await fetch("http://localhost:5000/api/profile/nayaka", { cache: "no-store" }).catch(() => null);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/profile/Nayaka21060112`, { cache: "no-store" }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json();
       profile = json.data;

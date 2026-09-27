@@ -14,15 +14,37 @@ export const getDashboard = async (req: Request, res: Response): Promise<void> =
 
     if (error) throw error;
     if (!taps) {
-      res.json({ success: true, data: { totalTaps: 0, recentTaps: [] } });
+      res.json({ success: true, data: { totalTaps: 0, recentTaps: [], sourceData: [], timeData: [] } });
       return;
     }
+
+    const sourceCount: Record<string, number> = {};
+    const timeCount: Record<string, number> = {};
+
+    taps.forEach(tap => {
+      // Count by source
+      const src = tap.source || 'unknown';
+      sourceCount[src] = (sourceCount[src] || 0) + 1;
+      
+      // Count by date
+      if (tap.tapped_at) {
+        const date = new Date(tap.tapped_at).toISOString().split('T')[0];
+        if (date) {
+          timeCount[date] = (timeCount[date] || 0) + 1;
+        }
+      }
+    });
+
+    const sourceData = Object.keys(sourceCount).map(name => ({ name, value: sourceCount[name] }));
+    const timeData = Object.keys(timeCount).map(date => ({ date, taps: timeCount[date] }));
 
     res.json({
       success: true,
       data: {
         totalTaps: taps.length,
-        recentTaps: taps.slice(-10).reverse()
+        recentTaps: taps.slice(-10).reverse(),
+        sourceData,
+        timeData
       }
     });
   } catch (error: unknown) {

@@ -14,6 +14,7 @@ export default function AdminContent() {
 
   const [activeTab, setActiveTab] = useState("about");
 
+  const [userId, setUserId] = useState("");
   const [formData, setFormData] = useState({
     full_name: "",
     headline: "",
@@ -22,8 +23,8 @@ export default function AdminContent() {
   const [cvFile, setCvFile] = useState<File | null>(null);
 
   // Forms state
-  const [expForm, setExpForm] = useState({ role: "", company: "", period: "", description: "" });
-  const [orgForm, setOrgForm] = useState({ name: "", role: "", period: "", description: "" });
+  const [expForm, setExpForm] = useState({ role: "", company: "", start_date: "", end_date: "", description: "" });
+  const [orgForm, setOrgForm] = useState({ name: "", role: "", start_date: "", end_date: "", description: "" });
   
   // Project Form state
   const [projectForm, setProjectForm] = useState({ title: "", description: "", category: "", content: "" });
@@ -57,9 +58,11 @@ export default function AdminContent() {
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/profile/nayaka`);
+      const res = await fetch(`${API_URL}/api/profile/Nayaka21060112`);
       if (res.ok) {
-        const data = await res.json();
+        const json = await res.json();
+        const data = json.data.profile;
+        setUserId(data.id || "");
         setFormData({
           full_name: data.full_name || "",
           headline: data.headline || "",
@@ -85,7 +88,7 @@ export default function AdminContent() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/profile/nayaka`, {
+      const res = await fetch(`${API_URL}/api/profile/Nayaka21060112`, {
         method: "PUT",
         headers: {
           Authorization: "Basic " + btoa(username + ":" + password)
@@ -109,9 +112,11 @@ export default function AdminContent() {
     setStatus("Adding Experience...");
     
     const payload = {
+      user_id: userId,
       company_name: expForm.company,
       role: expForm.role,
-      start_date: expForm.period,
+      start_date: expForm.start_date,
+      end_date: expForm.end_date || null,
       description: expForm.description
     };
     
@@ -125,7 +130,7 @@ export default function AdminContent() {
         body: JSON.stringify(payload),
       });
       setStatus(res.ok ? "Experience Added!" : "Failed to add.");
-      if (res.ok) setExpForm({ role: "", company: "", period: "", description: "" });
+      if (res.ok) setExpForm({ role: "", company: "", start_date: "", end_date: "", description: "" });
       setTimeout(() => setStatus(""), 3000);
     } catch (err) {
       console.error("Experience error", err);
@@ -141,9 +146,11 @@ export default function AdminContent() {
     setStatus("Adding Organization...");
     
     const payload = {
+      user_id: userId,
       org_name: orgForm.name,
       role: orgForm.role,
-      start_date: orgForm.period,
+      start_date: orgForm.start_date,
+      end_date: orgForm.end_date || null,
       description: orgForm.description
     };
     
@@ -157,7 +164,7 @@ export default function AdminContent() {
         body: JSON.stringify(payload),
       });
       setStatus(res.ok ? "Organization Added!" : "Failed to add.");
-      if (res.ok) setOrgForm({ name: "", role: "", period: "", description: "" });
+      if (res.ok) setOrgForm({ name: "", role: "", start_date: "", end_date: "", description: "" });
       setTimeout(() => setStatus(""), 3000);
     } catch (err) {
       console.error("Org error", err);
@@ -177,6 +184,7 @@ export default function AdminContent() {
     setStatus("Uploading Project...");
     
     const formDataObj = new FormData();
+    formDataObj.append("user_id", userId);
     formDataObj.append("title", projectForm.title);
     formDataObj.append("description", projectForm.description);
     formDataObj.append("content", projectForm.content);
@@ -376,14 +384,23 @@ export default function AdminContent() {
                     required
                   />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Period</label>
+                <div className="md:col-span-1">
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Start Date</label>
                   <input
-                    value={expForm.period}
-                    onChange={(e) => setExpForm({...expForm, period: e.target.value})}
-                    placeholder="e.g. Jan 2023 - Present"
+                    type="date"
+                    value={expForm.start_date}
+                    onChange={(e) => setExpForm({...expForm, start_date: e.target.value})}
                     className="w-full bg-blue-dark/20 border border-blue-main/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-light transition-all"
                     required
+                  />
+                </div>
+                <div className="md:col-span-1">
+                  <label className="block text-sm font-medium text-gray-400 mb-2">End Date (Leave empty if Current)</label>
+                  <input
+                    type="date"
+                    value={expForm.end_date}
+                    onChange={(e) => setExpForm({...expForm, end_date: e.target.value})}
+                    className="w-full bg-blue-dark/20 border border-blue-main/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-light transition-all"
                   />
                 </div>
               </div>
@@ -428,14 +445,23 @@ export default function AdminContent() {
                     required
                   />
                 </div>
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Period</label>
+                <div className="md:col-span-1">
+                  <label className="block text-sm font-medium text-gray-400 mb-2">Start Date</label>
                   <input
-                    value={orgForm.period}
-                    onChange={(e) => setOrgForm({...orgForm, period: e.target.value})}
-                    placeholder="e.g. 2023 - 2024"
+                    type="date"
+                    value={orgForm.start_date}
+                    onChange={(e) => setOrgForm({...orgForm, start_date: e.target.value})}
                     className="w-full bg-blue-dark/20 border border-blue-main/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-light transition-all"
                     required
+                  />
+                </div>
+                <div className="md:col-span-1">
+                  <label className="block text-sm font-medium text-gray-400 mb-2">End Date (Leave empty if Current)</label>
+                  <input
+                    type="date"
+                    value={orgForm.end_date}
+                    onChange={(e) => setOrgForm({...orgForm, end_date: e.target.value})}
+                    className="w-full bg-blue-dark/20 border border-blue-main/30 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-light transition-all"
                   />
                 </div>
               </div>

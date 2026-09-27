@@ -43,7 +43,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
   let project = null;
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
   try {
-    const res = await fetch(`${API_URL}/api/profile/nayaka`, { cache: "no-store" }).catch(() => null);
+    const res = await fetch(`${API_URL}/api/profile/Nayaka21060112`, { cache: "no-store" }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json();
       const profile = json.data;
@@ -111,7 +111,7 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
   
   let project: any = null;
   try {
-    const res = await fetch(`${API_URL}/api/profile/nayaka`, { cache: "no-store" }).catch(() => null);
+    const res = await fetch(`${API_URL}/api/profile/Nayaka21060112`, { cache: "no-store" }).catch(() => null);
     if (res && res.ok) {
       const json = await res.json();
       const profile = json.data;

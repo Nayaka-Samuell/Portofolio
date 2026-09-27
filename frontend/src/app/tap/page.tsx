@@ -13,19 +13,20 @@ function TapHandler() {
 
     const performTrackingAndRedirect = async () => {
       try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
+        
         // Fetch profile to get the dynamic profile ID
-        const profileRes = await fetch(`${apiUrl}/api/profile/nayaka`);
+        const profileRes = await fetch(`${apiUrl}/api/profile/Nayaka21060112`, { signal: controller.signal });
         if (profileRes.ok) {
-          const profile = await profileRes.json();
-          
-          // Send tap analytics
           await fetch(`${apiUrl}/api/analytics/tap`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: 'nayaka', source: src }),
+            body: JSON.stringify({ username: 'Nayaka21060112', source: src }),
             keepalive: true,
           });
         }
+        clearTimeout(timeoutId);
       } catch (err) {
         console.error("Tracking failed:", err);
       } finally {

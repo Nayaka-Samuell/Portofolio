@@ -147,3 +147,28 @@ export const uploadCV = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 };
+
+export const downloadVCard = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const username = req.params.username || 'Nayaka21060112';
+    const { data: user } = await supabase.from('users').select('*').eq('username', username).single();
+    if (!user) {
+      res.status(404).json({ success: false, error: 'User not found' });
+      return;
+    }
+    const vcard = `BEGIN:VCARD
+VERSION:3.0
+N:${user.full_name};;;
+FN:${user.full_name}
+EMAIL;TYPE=INTERNET:${user.contact_email || user.email}
+TEL;TYPE=CELL:${user.phone || ''}
+URL:${user.linkedin_url || ''}
+URL:${user.github_url || ''}
+END:VCARD`;
+    res.set('Content-Type', 'text/vcard');
+    res.set('Content-Disposition', `attachment; filename="${user.full_name.replace(/\s+/g, '_')}_Contact.vcf"`);
+    res.send(vcard);
+  } catch (error: unknown) {
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+};

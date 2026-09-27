@@ -137,7 +137,7 @@ export default function ContactSection({ sosmed }: { sosmed?: { github?: string,
             <button type="submit" disabled={isSubmitting} className="w-full py-3 bg-blue-main hover:bg-blue-light disabled:bg-blue-dark text-white rounded-lg font-bold transition-all shadow-[0_0_15px_rgba(59,130,246,0.4)] hover:shadow-[0_0_25px_rgba(96,165,250,0.6)] flex items-center justify-center gap-2">
               {isSubmitting ? "Sending..." : "Send Message"} {!isSubmitting && <Send size={18} />}
             </button>
-            <a href="http://localhost:5000/api/vcard" download className="w-full py-3 bg-blue-dark/50 hover:bg-blue-main/40 border border-blue-main/30 text-white rounded-lg font-bold transition-all flex items-center justify-center gap-2 mt-4">
+            <a href={`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/profile/Nayaka21060112/vcard`} download className="w-full py-3 bg-blue-dark/50 hover:bg-blue-main/40 border border-blue-main/30 text-white rounded-lg font-bold transition-all flex items-center justify-center gap-2 mt-4">
               Save Contact (vCard)
             </a>
           </motion.form>

@@ -12,6 +12,20 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
 
     const { name, email, message } = parseResult.data;
     
+    const escapeHTML = (str: string) => str.replace(/[&<>'"]/g, 
+      tag => (({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }) as Record<string, string>)[tag] || tag
+    );
+
+    const safeName = escapeHTML(name);
+    const safeEmail = escapeHTML(email);
+    const safeMessage = escapeHTML(message);
+
     // Configure Nodemailer Transporter
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -22,19 +36,19 @@ export const submitContact = async (req: Request, res: Response): Promise<void> 
     });
 
     const mailOptions = {
-      from: `"${name}" <${process.env.EMAIL_USER}>`,
+      from: `"${safeName}" <${process.env.EMAIL_USER}>`,
       replyTo: email,
       to: process.env.EMAIL_USER,
-      subject: `New Portfolio Contact Message from ${name}`,
+      subject: `New Portfolio Contact Message from ${safeName}`,
       text: `You have received a new contact message.\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
       html: `
         <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; max-width: 600px;">
           <h2 style="color: #333; border-bottom: 2px solid #0056b3; padding-bottom: 10px;">New Contact Message</h2>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+          <p><strong>Name:</strong> ${safeName}</p>
+          <p><strong>Email:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></p>
           <div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-left: 4px solid #0056b3;">
             <h4 style="margin-top: 0;">Message:</h4>
-            <p style="white-space: pre-wrap;">${message}</p>
+            <p style="white-space: pre-wrap;">${safeMessage}</p>
           </div>
         </div>
       `

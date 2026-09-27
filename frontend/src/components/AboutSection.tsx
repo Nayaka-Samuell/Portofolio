@@ -69,7 +69,7 @@ export default function AboutSection({ bio, cvUrl }: { bio?: string, cvUrl?: str
             </div>
             
             <a 
-              href={cvUrl || `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/export-cv`} 
+              href={cvUrl || "#"} 
               target={cvUrl ? "_blank" : "_self"}
               rel="noopener noreferrer"
               download={!cvUrl}
