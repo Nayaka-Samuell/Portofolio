@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { getProfile, upsertProfile, uploadCV, downloadVCard } from '../controllers/profileController';
-import { adminAuth } from '../middlewares/adminAuth';
+import { adminAuth, adminAuthRateLimiter } from '../middlewares/adminAuth';
 
 const router = Router();
 const upload = multer({ 
@@ -15,7 +15,7 @@ const upload = multer({
 
 router.get('/:username', getProfile);
 router.get('/:username/vcard', downloadVCard);
-router.post('/', adminAuth, upsertProfile);
-router.post('/cv', adminAuth, upload.single('cv'), uploadCV);
+router.post('/', adminAuthRateLimiter, adminAuth, upsertProfile);
+router.post('/cv', adminAuthRateLimiter, adminAuth, upload.single('cv'), uploadCV);
 
 export default router;

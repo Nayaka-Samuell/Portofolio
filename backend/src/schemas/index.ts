@@ -10,6 +10,7 @@ export const profileSchema = z.object({
   username: z.string().min(1, 'Username is required'),
   email: z.string().email('Invalid email address'),
   full_name: z.string().min(1, 'Full name is required'),
+  headline: z.string().optional(),
   bio: z.string().optional(),
   avatar_url: z.string().url('Invalid URL').optional().or(z.literal('')),
   contact_email: z.string().email('Invalid email').optional().or(z.literal('')),
@@ -29,6 +30,7 @@ export const crudSchemas: Record<string, z.ZodObject<any>> = {
   portfolios: z.object({
     user_id: z.string().uuid('Invalid User ID').optional(),
     title: z.string().min(1, 'Title is required').optional(),
+    category: z.string().optional().nullable(),
     description: z.string().optional().nullable(),
     content: z.string().optional().nullable(),
     project_url: z.string().optional().nullable(),

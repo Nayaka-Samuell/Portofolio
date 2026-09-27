@@ -88,8 +88,8 @@ export default function AdminContent() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/profile/Nayaka21060112`, {
-        method: "PUT",
+      const res = await fetch(`${API_URL}/api/profile`, {
+        method: "POST",
         headers: {
           Authorization: "Basic " + btoa(username + ":" + password)
         },
@@ -176,6 +176,12 @@ export default function AdminContent() {
 
   const handleProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+    if (!userId.trim()) {
+      setStatus("Profile ID unavailable. Please sign in again before uploading.");
+      alert("Profile ID unavailable. Please sign in again before uploading.");
+      return;
+    }
     if (!projectFile) {
       alert("Please upload a thumbnail image!");
       return;
@@ -192,7 +198,7 @@ export default function AdminContent() {
     formDataObj.append("thumbnail", projectFile); // File Blob
 
     try {
-      const res = await fetch(`${API_URL}/api/projects`, {
+      const res = await fetch(`${API_URL}/api/portfolios`, {
         method: "POST",
         headers: {
           Authorization: "Basic " + btoa(username + ":" + password)
@@ -204,11 +210,14 @@ export default function AdminContent() {
         setProjectForm({ title: "", description: "", category: "", content: "" });
         setProjectFile(null);
         if(fileInputRef.current) fileInputRef.current.value = "";
+      } else {
+        alert(`Upload failed (HTTP ${res.status}). Please try again.`);
       }
       setTimeout(() => setStatus(""), 3000);
     } catch (err) {
       console.error("Project error", err);
       setStatus("Error connecting to server.");
+      alert("Upload failed. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }

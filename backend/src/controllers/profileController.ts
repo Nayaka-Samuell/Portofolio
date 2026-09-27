@@ -8,7 +8,7 @@ export const getProfile = async (req: Request, res: Response): Promise<void> => 
 
     const { data: user, error: userError } = await supabase
       .from('users')
-      .select('id, username, email, full_name, bio, avatar_url, contact_email, phone, linkedin_url, github_url, cv_url')
+      .select('id, username, email, full_name, headline, bio, avatar_url, contact_email, phone, linkedin_url, github_url, cv_url')
       .eq('username', username)
       .single();
 
@@ -55,7 +55,7 @@ export const upsertProfile = async (req: Request, res: Response): Promise<void> 
     }
 
     const { 
-      username, email, full_name, bio, avatar_url, 
+      username, email, full_name, headline, bio, avatar_url, 
       contact_email, phone, linkedin_url, github_url, cv_url
     } = parseResult.data;
 
@@ -70,7 +70,7 @@ export const upsertProfile = async (req: Request, res: Response): Promise<void> 
       result = await supabase
         .from('users')
         .update({
-          email, full_name, bio, avatar_url, 
+          email, full_name, headline, bio, avatar_url, 
           contact_email, phone, linkedin_url, github_url, cv_url,
           updated_at: new Date().toISOString()
         })
@@ -81,7 +81,7 @@ export const upsertProfile = async (req: Request, res: Response): Promise<void> 
       result = await supabase
         .from('users')
         .insert([{
-          username, email, full_name, bio, avatar_url, 
+          username, email, full_name, headline, bio, avatar_url, 
           contact_email, phone, linkedin_url, github_url, cv_url
         }])
         .select()

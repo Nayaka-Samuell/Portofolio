@@ -21,7 +21,7 @@ router.use('/', crudRoutes);
 // so we also need to alias it or remap it if the frontend expects '/api/dashboard'.
 // Let's create an alias for compatibility:
 import { getDashboard } from '../controllers/analyticsController';
-import { adminAuth } from '../middlewares/adminAuth';
-router.get('/dashboard', adminAuth, getDashboard);
+import { adminAuth, adminAuthRateLimiter } from '../middlewares/adminAuth';
+router.get('/dashboard', adminAuthRateLimiter, adminAuth, getDashboard);
 
 export default router;

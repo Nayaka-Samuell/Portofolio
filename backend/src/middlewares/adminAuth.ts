@@ -1,4 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
+import rateLimit from 'express-rate-limit';
+
+// Counts only failed authentication attempts, then blocks the source IP.
+export const adminAuthRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  skipSuccessfulRequests: true,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: 'Too many failed authentication attempts. Try again later.' }
+});
 
 export const adminAuth = (req: Request, res: Response, next: NextFunction): void => {
   let username = '';

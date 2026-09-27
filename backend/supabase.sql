@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     full_name TEXT NOT NULL,
+    headline TEXT,
     bio TEXT,
     avatar_url TEXT,
     contact_email TEXT,
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS portfolios (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title TEXT NOT NULL,
+    category TEXT,
     description TEXT,
     content TEXT, -- Markdown case study
     project_url TEXT,

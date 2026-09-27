@@ -1,43 +1,56 @@
 "use client";
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function TapHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const src = searchParams.get('src') || 'direct';
+  const hasFired = useRef(false);
 
   useEffect(() => {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    if (hasFired.current) return;
+
+    const apiUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+    const controller = new AbortController();
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
     const performTrackingAndRedirect = async () => {
+      if (hasFired.current) return;
+      hasFired.current = true;
+      timeoutId = setTimeout(() => controller.abort(), 2000);
+
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000); // 2 second timeout
-        
-        // Fetch profile to get the dynamic profile ID
-        const profileRes = await fetch(`${apiUrl}/api/profile/Nayaka21060112`, { signal: controller.signal });
-        if (profileRes.ok) {
-          await fetch(`${apiUrl}/api/analytics/tap`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: 'Nayaka21060112', source: src }),
-            keepalive: true,
-          });
-        }
-        clearTimeout(timeoutId);
-      } catch (err) {
-        console.error("Tracking failed:", err);
+        const profileRes = await fetch(`${apiUrl}/api/profile/Nayaka21060112`, {
+          signal: controller.signal,
+        });
+        if (!profileRes.ok) throw new Error('Profile unavailable');
+
+        const response = await fetch(`${apiUrl}/api/analytics/tap`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: 'Nayaka21060112', source: src }),
+          signal: controller.signal,
+          keepalive: true,
+        });
+        if (!response.ok) throw new Error('Tracking rejected');
+      } catch {
+        // Analytics failure or timeout must not block access to the portfolio.
       } finally {
-        // Brief delay for UI feedback before replacing history
-        setTimeout(() => {
-          router.replace('/');
-        }, 500);
+        clearTimeout(timeoutId);
+        router.replace('/');
       }
     };
 
-    performTrackingAndRedirect();
+    // Defer until after Strict Mode's setup/cleanup replay, so it cannot
+    // abort the only request before it starts or send a duplicate POST.
+    const startId = setTimeout(() => void performTrackingAndRedirect(), 0);
+    return () => {
+      clearTimeout(startId);
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [src, router]);
 
   return (
