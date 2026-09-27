@@ -107,12 +107,12 @@ export default function OrganizationDetail() {
             </p>
           </motion.div>
 
-          {/* Floating Parallax Images */}
-          <motion.div style={{ y }} className="absolute inset-0 w-full h-full">
+          {/* Floating Parallax Images (Now in FRONT of the blur, z-20) */}
+          <motion.div style={{ y }} className="absolute inset-0 w-full h-full z-20 pointer-events-none">
             <motion.div 
               animate={{ y: [0, -20, 0] }} 
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-0 left-10 w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(59,130,246,0.3)] opacity-60 border-2 border-blue-main/30"
+              className="absolute top-0 left-10 w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-[0_0_30px_rgba(59,130,246,0.3)] opacity-80 border-2 border-blue-main/30"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={floatingPhotos[1]} className="w-full h-full object-cover" alt="Org Activity" />
@@ -121,7 +121,7 @@ export default function OrganizationDetail() {
             <motion.div 
               animate={{ y: [0, 20, 0] }} 
               transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-10 right-10 w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden shadow-[0_0_40px_rgba(96,165,250,0.2)] opacity-80 border-4 border-blue-dark/50"
+              className="absolute bottom-10 right-10 w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden shadow-[0_0_40px_rgba(96,165,250,0.4)] opacity-100 border-4 border-blue-main"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={floatingPhotos[0]} className="w-full h-full object-cover" alt="Org Main" />
@@ -130,14 +130,14 @@ export default function OrganizationDetail() {
             <motion.div 
               animate={{ y: [0, -30, 0] }} 
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute top-20 right-20 w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden shadow-2xl opacity-50 border border-blue-main/20"
+              className="absolute top-20 right-20 w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden shadow-2xl opacity-70 border border-blue-main/20"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={floatingPhotos[2]} className="w-full h-full object-cover" alt="Org Members" />
             </motion.div>
           </motion.div>
           
-          <div className="absolute inset-0 bg-blue-base/60 backdrop-blur-sm z-20"></div>
+          <div className="absolute inset-0 bg-blue-base/60 backdrop-blur-sm z-10"></div>
         </div>
 
         {/* Content Section */}
