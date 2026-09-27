@@ -13,16 +13,17 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const res = await fetch("http://localhost:5000/api/profile/nayaka", { cache: "no-store" }).catch(() => null);
     if (res && res.ok) {
-      profile = await res.json();
+      const json = await res.json();
+      profile = json.data;
     }
   } catch {
     // Silently ignore
   }
 
-  const name = profile?.full_name || "Nayaka Samuel Andrean";
+  const name = profile?.profile?.full_name || "Nayaka Samuel Andrean";
   const title = `${name} | Portfolio`;
-  const description = profile?.headline || "Computer Science Student & Full-Stack Developer";
-  const ogImage = profile?.og_image || "https://via.placeholder.com/1200x630.png?text=Portfolio";
+  const description = profile?.profile?.headline || profile?.profile?.bio || "Computer Science Student & Full-Stack Developer";
+  const ogImage = profile?.profile?.avatar_url || "https://via.placeholder.com/1200x630.png?text=Portfolio";
 
   return {
     title,
@@ -55,7 +56,8 @@ export default async function Home() {
   try {
     const res = await fetch("http://localhost:5000/api/profile/nayaka", { cache: "no-store" }).catch(() => null);
     if (res && res.ok) {
-      profile = await res.json();
+      const json = await res.json();
+      profile = json.data;
     }
   } catch {
     // Silently ignore
@@ -64,13 +66,13 @@ export default async function Home() {
   return (
     <>
       <HeroSection 
-        name={profile?.full_name} 
-        headline={profile?.headline} 
-        bio={profile?.bio} 
+        name={profile?.profile?.full_name} 
+        headline={profile?.profile?.headline} 
+        bio={profile?.profile?.bio} 
       />
       <AboutSection 
-        bio={profile?.bio} 
-        cvUrl={profile?.cv_url}
+        bio={profile?.profile?.bio} 
+        cvUrl={profile?.profile?.cv_url}
       />
       <ExperienceSection 
         experiences={profile?.experiences} 
@@ -82,7 +84,11 @@ export default async function Home() {
         organizations={profile?.organizations} 
       />
       <ContactSection 
-        sosmed={profile?.sosmed} 
+        sosmed={{
+          linkedin: profile?.profile?.linkedin_url,
+          github: profile?.profile?.github_url,
+          email: profile?.profile?.contact_email,
+        }} 
       />
     </>
   );

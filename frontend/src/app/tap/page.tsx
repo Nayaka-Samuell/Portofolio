@@ -18,11 +18,11 @@ function TapHandler() {
         if (profileRes.ok) {
           const profile = await profileRes.json();
           
-          // Send tap analytics with the dynamic profile ID
+          // Send tap analytics
           await fetch(`${apiUrl}/api/analytics/tap`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: profile.id, source: src }),
+            body: JSON.stringify({ username: 'nayaka', source: src }),
             keepalive: true,
           });
         }

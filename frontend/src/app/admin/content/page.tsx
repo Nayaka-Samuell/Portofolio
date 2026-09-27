@@ -41,7 +41,7 @@ export default function AdminContent() {
         body: JSON.stringify({ username, password }),
       });
       
-      if (authRes.ok || (username === "Nayaka21060112" && password === "Akuganteng_21")) {
+      if (authRes.ok) {
         setIsAuthenticated(true);
         fetchData();
       } else {
@@ -49,12 +49,7 @@ export default function AdminContent() {
       }
     } catch (err) {
       console.error(err);
-      if (username === "Nayaka21060112" && password === "Akuganteng_21") {
-        setIsAuthenticated(true);
-        fetchData();
-      } else {
-        alert("Invalid Username or Password!");
-      }
+      alert("Invalid Username or Password!");
     } finally {
       setLoading(false);
     }
@@ -92,6 +87,9 @@ export default function AdminContent() {
     try {
       const res = await fetch(`${API_URL}/api/profile/nayaka`, {
         method: "PUT",
+        headers: {
+          Authorization: "Basic " + btoa(username + ":" + password)
+        },
         body: profileData, // Automatically sets multipart/form-data
       });
       setStatus(res.ok ? "Profile updated successfully!" : "Failed to update profile.");
@@ -109,11 +107,22 @@ export default function AdminContent() {
     e.preventDefault();
     setLoading(true);
     setStatus("Adding Experience...");
+    
+    const payload = {
+      company_name: expForm.company,
+      role: expForm.role,
+      start_date: expForm.period,
+      description: expForm.description
+    };
+    
     try {
-      const res = await fetch(`${API_URL}/api/experience`, {
+      const res = await fetch(`${API_URL}/api/experiences`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(expForm),
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: "Basic " + btoa(username + ":" + password)
+        },
+        body: JSON.stringify(payload),
       });
       setStatus(res.ok ? "Experience Added!" : "Failed to add.");
       if (res.ok) setExpForm({ role: "", company: "", period: "", description: "" });
@@ -130,11 +139,22 @@ export default function AdminContent() {
     e.preventDefault();
     setLoading(true);
     setStatus("Adding Organization...");
+    
+    const payload = {
+      org_name: orgForm.name,
+      role: orgForm.role,
+      start_date: orgForm.period,
+      description: orgForm.description
+    };
+    
     try {
-      const res = await fetch(`${API_URL}/api/organization`, {
+      const res = await fetch(`${API_URL}/api/organizations`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orgForm),
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: "Basic " + btoa(username + ":" + password)
+        },
+        body: JSON.stringify(payload),
       });
       setStatus(res.ok ? "Organization Added!" : "Failed to add.");
       if (res.ok) setOrgForm({ name: "", role: "", period: "", description: "" });
@@ -166,6 +186,9 @@ export default function AdminContent() {
     try {
       const res = await fetch(`${API_URL}/api/projects`, {
         method: "POST",
+        headers: {
+          Authorization: "Basic " + btoa(username + ":" + password)
+        },
         body: formDataObj, // Browser otomatis set Content-Type multipart/form-data
       });
       setStatus(res.ok ? "Project Uploaded Successfully!" : "Upload failed.");

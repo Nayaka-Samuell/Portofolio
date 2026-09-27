@@ -18,8 +18,13 @@ export const adminAuth = (req: Request, res: Response, next: NextFunction): void
     password = (req.headers['x-admin-password'] as string) || (req.body?.adminPassword as string) || '';
   }
 
-  const validUsername = process.env.ADMIN_USERNAME || 'Nayaka21060112';
-  const validPassword = process.env.ADMIN_PASSWORD || 'Akuganteng_21';
+  const validUsername = process.env.ADMIN_USERNAME;
+  const validPassword = process.env.ADMIN_PASSWORD;
+
+  if (!validUsername || !validPassword) {
+    res.status(500).json({ success: false, error: 'Server configuration error: Admin credentials not set' });
+    return;
+  }
 
   if (username === validUsername && password === validPassword) {
     next();

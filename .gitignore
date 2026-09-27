@@ -25,3 +25,10 @@ build/
 .DS_Store
 Thumbs.db
 .vscode/
+# Internal AI & Temp Folders
+.awesome-skills-security-temp
+.skillspector-temp
+.cybersecurity-skills-temp
+.taste-skill-temp
+Firstmade/
+.pi/

@@ -24,10 +24,11 @@ export default function Dashboard() {
       });
       
       if (authRes.ok) {
-        // Setelah sukses login, baru ambil data analytics
-        // Catatan: Jika backend mem-verifikasi menggunakan header Authorization atau session, 
-        // request ini bisa disesuaikan nantinya. 
-        const res = await fetch(`${API_URL}/api/analytics?username=${username}&pwd=${pwd}`);
+        const res = await fetch(`${API_URL}/api/analytics/dashboard`, {
+          headers: { 
+            Authorization: `Basic ${btoa(username + ":" + pwd)}` 
+          }
+        });
         if (res.ok) {
           const json = await res.json();
           setData(json);

@@ -25,7 +25,8 @@ export default function OrganizationDetail() {
         
         let org = null;
         if (res && res.ok) {
-          const profile = await res.json();
+          const json = await res.json();
+      const profile = json.data;
           org = profile.organizations?.find((o: any, i: number) => o.id === id || o._id === id || i.toString() === id);
         }
         

@@ -45,7 +45,8 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
   try {
     const res = await fetch(`${API_URL}/api/profile/nayaka`, { cache: "no-store" }).catch(() => null);
     if (res && res.ok) {
-      const profile = await res.json();
+      const json = await res.json();
+      const profile = json.data;
       project = profile.portfolios?.find((p: any) => p.id === id || p._id === id);
     }
   } catch {
@@ -112,7 +113,8 @@ export default async function ProjectDetailPage(props: { params: Promise<{ id: s
   try {
     const res = await fetch(`${API_URL}/api/profile/nayaka`, { cache: "no-store" }).catch(() => null);
     if (res && res.ok) {
-      const profile = await res.json();
+      const json = await res.json();
+      const profile = json.data;
       project = profile.portfolios?.find((p: Record<string, unknown>) => p.id === id || p._id === id);
     }
   } catch {

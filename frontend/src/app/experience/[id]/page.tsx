@@ -29,7 +29,8 @@ export default function ExperienceDetail() {
         
         let exp = null;
         if (res && res.ok) {
-          const profile = await res.json();
+          const json = await res.json();
+      const profile = json.data;
           // Match by id or index if dummy id is used
           exp = profile.experiences?.find((e: any, i: number) => e.id === id || e._id === id || i.toString() === id);
         }
