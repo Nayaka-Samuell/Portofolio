@@ -35,9 +35,25 @@ export const getProfile = async (req: Request, res: Response): Promise<void> => 
       success: true,
       data: {
         profile: user,
-        portfolios: portfolios || [],
-        experiences: experiences || [],
-        organizations: organizations || []
+        portfolios: (portfolios || []).map(p => ({
+          ...p,
+          name: p.title,
+          period: p.created_at ? new Date(p.created_at).getFullYear().toString() : '',
+          logo: p.image_url || ''
+        })),
+        experiences: (experiences || []).map(e => ({
+          ...e,
+          name: e.company_name,
+          company: e.company_name,
+          period: `${e.start_date || ''} - ${e.is_current ? 'Present' : (e.end_date || 'Present')}`,
+          logo: ''
+        })),
+        organizations: (organizations || []).map(o => ({
+          ...o,
+          name: o.org_name,
+          period: `${o.start_date || ''} - ${o.is_current ? 'Present' : (o.end_date || 'Present')}`,
+          logo: ''
+        }))
       }
     });
   } catch (error: unknown) {
